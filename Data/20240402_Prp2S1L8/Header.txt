@@ -1,0 +1,8 @@
+Intregation Time (s) = 0.500000
+StepsX = 60
+StepsY = 120
+Step Size (um) = 0.500000
+Spectrum Width = 1044
+Date = 4/9/2024
+Time = 10:35 AM
+
