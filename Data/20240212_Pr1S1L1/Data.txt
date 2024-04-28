@@ -3,4 +3,6 @@ Crystal Average: 623.8497620722069
 Glass Average: 623.8120351306716
 Inner Average 623.8523844860575
 Edge Average 623.8367410589882
+Center to Edge Distance (X): 4.25
+Center to Edge Distance (Y): 17.5
 Crystal Area (µm²): 214.75

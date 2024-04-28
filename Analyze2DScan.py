@@ -130,7 +130,10 @@ for Folder in os.listdir(Parent):
     # Center of Gravity for Each Peak
     CenterOfGravityMulti = []
     for i in range(len(GraphPeaks)):
-        CenterOfGravityMulti.append(sb.CenterOfGravity(ScanData, Peaks[i], 20, Wavelengths, StepsY, StepsX, SpectrumWidth))
+        if(i == PeakNumber):
+            CenterOfGravityMulti.append(sb.CenterOfGravity(ScanData, Peaks[i], 20, Wavelengths, StepsY, StepsX, SpectrumWidth))
+        else:
+            CenterOfGravityMulti.append(np.zeros((StepsY, StepsX)))
 
     # Intensity Colormap
     XAxis,YAxis = np.meshgrid(np.linspace(0, ScanWidth, StepsX), np.linspace(0, ScanHeight, StepsY))
@@ -245,7 +248,8 @@ for Folder in os.listdir(Parent):
     DataFile.write('Edge Average ' + str(EdgeCrystalAverage) + '\n')
 
     print('X Max:', XMax, 'X Min:', XMin, 'Y Max:', YMax, 'Y Min:', YMin)
-
+    DataFile.write('Center to Edge Distance (X): ' + str(float((XMax - XMin)/4)) + '\n')
+    DataFile.write('Center to Edge Distance (Y): ' + str(float((YMax - YMin)/4)) + '\n')
     CenterX, CenterY = int(XMin + ((XMax - XMin)/2)), int(YMin + ((YMax - YMin)/2))
     InnerCrystalDetection[CenterY, CenterX] = 3
 
