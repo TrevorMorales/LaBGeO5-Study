@@ -1,0 +1,6 @@
+Looking at peak 4
+Crystal Average: 623.8497620722069
+Glass Average: 623.8120351306716
+Inner Average 623.8523844860575
+Edge Average 623.8367410589882
+Crystal Area (µm²): 214.75

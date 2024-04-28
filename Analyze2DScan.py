@@ -51,10 +51,6 @@ for Folder in os.listdir(Parent):
     # LEHIGH = 531.9585 nm
     LaserWavelength = 487.79
 
-    # Set Center of Gravity Range in Integer Wavelengths
-    StartWavelength = 643
-    EndWavelength = 647
-
     # Array Initialization
     ScanData = np.zeros((StepsY, StepsX, SpectrumWidth))
     NormalizedScan = np.zeros((StepsY, StepsX, SpectrumWidth))
@@ -72,12 +68,6 @@ for Folder in os.listdir(Parent):
     for i in range(SpectrumWidth):
         Wavelengths.append(float(XFile.readline()))
     XFile.close()
-
-    # Find Index Count Between the Center of Gravity Range
-    StartIndex = sb.WavelengthToIndex(StartWavelength, Wavelengths)
-    EndIndex = sb.WavelengthToIndex(EndWavelength, Wavelengths)
-    CenterOfGravityIndexRange = EndIndex - StartIndex
-    print(CenterOfGravityIndexRange)
 
     # Find Wavenumber for Spectrum
     for i in range(len(Wavelengths)):
@@ -99,10 +89,6 @@ for Folder in os.listdir(Parent):
                 Area[k] = ScanData[i][j][k] * Wavelengths[k]
                 if(ScanData[i][j][k] > SpectrumMax[i][j]):
                     SpectrumMax[i][j] = ScanData[i][j][k]
-            for l in range(CenterOfGravityIndexRange):
-                CenterOfGravity[i][j] = CenterOfGravity[i][j] + Area[l + StartIndex]
-                Weight = Weight + ScanData[i][j][l + StartIndex]
-            CenterOfGravity[i][j] = CenterOfGravity[i][j] / Weight
             for m in range(SpectrumWidth):
                 NormalizedScan[i][j][m] = ScanData[i][j][m] / SpectrumMax[i][j]
 
@@ -136,9 +122,15 @@ for Folder in os.listdir(Parent):
     # Determine which peak to look at
     PeakNumber = 0
     MaxPeak = 0
-    for i in range(len(GraphPeaks)):
-        if(GraphPeaks[i] > MaxPeak):
+    for i in range(len(Peaks)):
+        if(ScanData[Y,X,i] > MaxPeak):
+            MaxPeak = ScanData[Y,X,i]
             PeakNumber = i
+
+    # Center of Gravity for Each Peak
+    CenterOfGravityMulti = []
+    for i in range(len(GraphPeaks)):
+        CenterOfGravityMulti.append(sb.CenterOfGravity(ScanData, Peaks[i], 20, Wavelengths, StepsY, StepsX, SpectrumWidth))
 
     # Intensity Colormap
     XAxis,YAxis = np.meshgrid(np.linspace(0, ScanWidth, StepsX), np.linspace(0, ScanHeight, StepsY))
@@ -163,7 +155,7 @@ for Folder in os.listdir(Parent):
     CenterOfGravityFigure = plt.figure(2)
     CenterOfGravityFigure.clf()
     Axes = plt.gca()
-    PlotColor = Axes.pcolormesh(XAxis,YAxis,CenterOfGravity[:,:].squeeze(), cmap = plt.get_cmap('viridis'))
+    PlotColor = Axes.pcolormesh(XAxis,YAxis,CenterOfGravityMulti[PeakNumber].squeeze(), cmap = plt.get_cmap('viridis'))
     ColorBar = plt.colorbar(PlotColor)
     ColorBar.ax.set_ylabel('Wavelength (nm)')
     Axes.set_title('Center of Gravity Shift')
@@ -202,43 +194,21 @@ for Folder in os.listdir(Parent):
     plt.plot(GraphPeaks, ScanData[Y,X,Peaks], 'x')
     plt.savefig(Folder + '/'+str(X/2)+'x'+str(Y/2)+'Spectrum.png', bbox_inches='tight')
 
-    # Center of Gravity for Each Peak
-    CenterOfGravityMulti = []
-    for i in range(len(GraphPeaks)-1):
-        CenterOfGravityNewFigure = plt.figure(i+4)
-        CenterOfGravityNewFigure.clf()
-        CenterOfGravityMulti.append(sb.CenterOfGravity(ScanData, Peaks[i+1], 20, Wavelengths, StepsY, StepsX, SpectrumWidth))
-        XAxis,YAxis = np.meshgrid(np.linspace(0, ScanWidth, StepsX), np.linspace(0, ScanHeight, StepsY))
-        Axes = plt.gca()
-        PlotColor = Axes.pcolormesh(XAxis,YAxis,(CenterOfGravityMulti[i]), cmap = plt.get_cmap('viridis'))
-        ColorBar = plt.colorbar(PlotColor)
-        ColorBar.ax.set_ylabel('Crystal (a.u.)')
-        Axes.set_title('Center Of Gravity Peak ' + str(i + 1))
-        Axes.set_xlabel('Position (µm)')
-        Axes.set_ylabel('Position (µm)')
-        Axes.tick_params(top=True, labeltop=True, bottom=False, labelbottom=False)
-        Axes.xaxis.set_label_position('top')
-        plt.ylim(np.max(plt.ylim()), np.min(plt.ylim()))
-        Axes.figure.set_size_inches(ScanWidth*.1,ScanHeight*.1) # Not actually correct
-        plt.savefig(Folder + '/CenterOfGravityPeak'+ str(i+1) + '.png',bbox_inches='tight')
-        plt.cla()
-        plt.clf()
-
     # Compare Glass Shift to Crystal Shift
     GlassCount, CrystalCount = 0, 0
     GlassAverage, CrystalAverage = 0, 0
     for i in range(StepsY):
         for j in range(StepsX):
             if(CrystalDetection[i][j] == 0):
-                GlassAverage = GlassAverage + CenterOfGravityMulti[PeakNumber - 1][i,j]
+                GlassAverage = GlassAverage + CenterOfGravityMulti[PeakNumber][i,j]
                 GlassCount = GlassCount + 1
             if(CrystalDetection[i][j] == 1):
-                CrystalAverage = CrystalAverage + CenterOfGravityMulti[PeakNumber - 1][i,j]
+                CrystalAverage = CrystalAverage + CenterOfGravityMulti[PeakNumber][i,j]
                 CrystalCount = CrystalCount + 1
     if(CrystalCount > 1 and GlassCount > 1):
         CrystalAverage = CrystalAverage / CrystalCount
         GlassAverage = GlassAverage / GlassCount
-    DataFile.write('Looking at peak' + str(PeakNumber) + '\n')
+    DataFile.write('Looking at peak ' + str(PeakNumber) + '\n')
     DataFile.write('Crystal Average: ' + str(CrystalAverage) + '\n')
     DataFile.write('Glass Average: ' + str(GlassAverage) + '\n')
 
@@ -264,11 +234,11 @@ for Folder in os.listdir(Parent):
                     if(CrystalDetection[i+1][j] == 0 or CrystalDetection[i-1][j] == 0 or CrystalDetection[i][j+1] == 0 or CrystalDetection[i][j-1] == 0 or CrystalDetection[i][j-1] == 0):
                         InnerCrystalDetection[i][j] = 1
                         EdgeCrystalCount = EdgeCrystalCount + 1
-                        EdgeCrystalAverage = EdgeCrystalAverage + CenterOfGravityMulti[PeakNumber - 1][i,j]
+                        EdgeCrystalAverage = EdgeCrystalAverage + CenterOfGravityMulti[PeakNumber][i,j]
                     else:
                         InnerCrystalDetection[i][j] = 2
                         InnerCrystalCount = InnerCrystalCount + 1
-                        InnerCrystalAverage = InnerCrystalAverage + CenterOfGravityMulti[PeakNumber - 1][i,j]
+                        InnerCrystalAverage = InnerCrystalAverage + CenterOfGravityMulti[PeakNumber][i,j]
     InnerCrystalAverage = InnerCrystalAverage / InnerCrystalCount
     EdgeCrystalAverage = EdgeCrystalAverage / EdgeCrystalCount
     DataFile.write('Inner Average ' + str(InnerCrystalAverage) + '\n')
