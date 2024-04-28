@@ -133,6 +133,13 @@ for Folder in os.listdir(Parent):
     for i in range(len(Peaks)):
         GraphPeaks[i] = Wavelengths[Peaks[i]]
 
+    # Determine which peak to look at
+    PeakNumber = 0
+    MaxPeak = 0
+    for i in range(len(GraphPeaks)):
+        if(GraphPeaks[i] > MaxPeak):
+            PeakNumber = i
+
     # Intensity Colormap
     XAxis,YAxis = np.meshgrid(np.linspace(0, ScanWidth, StepsX), np.linspace(0, ScanHeight, StepsY))
     IntensityFigure = plt.figure(1)
@@ -220,7 +227,6 @@ for Folder in os.listdir(Parent):
     # Compare Glass Shift to Crystal Shift
     GlassCount, CrystalCount = 0, 0
     GlassAverage, CrystalAverage = 0, 0
-    PeakNumber = 4
     for i in range(StepsY):
         for j in range(StepsX):
             if(CrystalDetection[i][j] == 0):
