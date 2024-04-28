@@ -125,7 +125,8 @@ for Folder in os.listdir(Parent):
                 CrystalDetection[i][j] = 1
 
     # Peak Finder on Specific Spectrum
-    X, Y = int(CrystalDetection[1]), int(CrystalDetection[0])
+    X = int(CrystalDetection[1])
+    Y = int(CrystalDetection[0])
     Peaks, _ = find_peaks(ScanData[int(CrystalLocation[0]),int(CrystalLocation[1]),:], height = 500, distance = 10, prominence = 50)
     GraphPeaks = np.zeros((len(Peaks)))
     for i in range(len(Peaks)):
