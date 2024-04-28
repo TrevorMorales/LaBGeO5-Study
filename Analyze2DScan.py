@@ -30,6 +30,7 @@ for Folder in os.listdir(Parent):
     XFilePath = Folder + '/X-Axis.txt'
     YFilePath = Folder + '/Y-Axis.txt'
     DataPath = Folder + '/Data.txt'
+    DataFile = open(DataPath, "w").close()
     DataFile = open(DataPath, "w")
 
     # Extract Data from Header
@@ -125,8 +126,8 @@ for Folder in os.listdir(Parent):
                 CrystalDetection[i][j] = 1
 
     # Peak Finder on Specific Spectrum
-    X = int(CrystalDetection[1])
-    Y = int(CrystalDetection[0])
+    X = int(CrystalLocation[1])
+    Y = int(CrystalLocation[0])
     Peaks, _ = find_peaks(ScanData[int(CrystalLocation[0]),int(CrystalLocation[1]),:], height = 500, distance = 10, prominence = 50)
     GraphPeaks = np.zeros((len(Peaks)))
     for i in range(len(Peaks)):
@@ -297,3 +298,5 @@ for Folder in os.listdir(Parent):
     plt.ylim(np.max(plt.ylim()), np.min(plt.ylim()))
     Axes.figure.set_size_inches(ScanWidth*.1,ScanHeight*.1) # Not actually correct
     plt.savefig(Folder + '/InnerCrystalDetection.png',bbox_inches='tight')
+
+    print("Done")
