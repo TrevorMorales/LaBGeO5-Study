@@ -123,8 +123,8 @@ for Folder in os.listdir(Parent):
     PeakNumber = 0
     MaxPeak = 0
     for i in range(len(Peaks)):
-        if(ScanData[Y,X,i] > MaxPeak):
-            MaxPeak = ScanData[Y,X,i]
+        if(ScanData[Y,X,Peaks[i]] > MaxPeak):
+            MaxPeak = ScanData[Y,X,Peaks[i]]
             PeakNumber = i
 
     # Center of Gravity for Each Peak
