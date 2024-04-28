@@ -244,14 +244,24 @@ for Folder in os.listdir(Parent):
                         InnerCrystalAverage = InnerCrystalAverage + CenterOfGravityMulti[PeakNumber][i,j]
     InnerCrystalAverage = InnerCrystalAverage / InnerCrystalCount
     EdgeCrystalAverage = EdgeCrystalAverage / EdgeCrystalCount
-    DataFile.write('Inner Average ' + str(InnerCrystalAverage) + '\n')
-    DataFile.write('Edge Average ' + str(EdgeCrystalAverage) + '\n')
 
     print('X Max:', XMax, 'X Min:', XMin, 'Y Max:', YMax, 'Y Min:', YMin)
-    DataFile.write('Center to Edge Distance (X): ' + str(float((XMax - XMin)/4)) + '\n')
-    DataFile.write('Center to Edge Distance (Y): ' + str(float((YMax - YMin)/4)) + '\n')
     CenterX, CenterY = int(XMin + ((XMax - XMin)/2)), int(YMin + ((YMax - YMin)/2))
     InnerCrystalDetection[CenterY, CenterX] = 3
+    InnerCrystalAverage = 0
+    for i in range(StepsY):
+        for j in range(StepsX):
+            if(InnerCrystalDetection[i][j] == 3):
+                InnerCrystalAverage = InnerCrystalAverage + CenterOfGravityMulti[PeakNumber][i,j]
+                InnerCrystalAverage = InnerCrystalAverage + CenterOfGravityMulti[PeakNumber][i+1,j]
+                InnerCrystalAverage = InnerCrystalAverage + CenterOfGravityMulti[PeakNumber][i,j+1]
+                InnerCrystalAverage = InnerCrystalAverage + CenterOfGravityMulti[PeakNumber][i-1,j]
+                InnerCrystalAverage = InnerCrystalAverage + CenterOfGravityMulti[PeakNumber][i,j-1]
+    InnerCrystalAverage = InnerCrystalAverage / 5
+    DataFile.write('Inner Average ' + str(InnerCrystalAverage) + '\n')
+    DataFile.write('Edge Average ' + str(EdgeCrystalAverage) + '\n')
+    DataFile.write('Center to Edge Distance (X): ' + str(float((XMax - XMin)/4)) + '\n')
+    DataFile.write('Center to Edge Distance (Y): ' + str(float((YMax - YMin)/4)) + '\n')
 
     # Area of Crystal
     CrystalArea = 0
