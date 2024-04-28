@@ -231,8 +231,9 @@ for Folder in os.listdir(Parent):
     if(CrystalCount > 1 and GlassCount > 1):
         CrystalAverage = CrystalAverage / CrystalCount
         GlassAverage = GlassAverage / GlassCount
-    DataFile.write('Crystal Average: ' + str(CrystalAverage))
-    DataFile.write('Glass Average: ' + str(GlassAverage))
+    DataFile.write('Looking at peak' + str(PeakNumber) + '\n')
+    DataFile.write('Crystal Average: ' + str(CrystalAverage) + '\n')
+    DataFile.write('Glass Average: ' + str(GlassAverage) + '\n')
 
     # Compare Inner Glass to Outer Glass
     InnerCrystalDetection = np.zeros((StepsY, StepsX))
@@ -263,8 +264,8 @@ for Folder in os.listdir(Parent):
                         InnerCrystalAverage = InnerCrystalAverage + CenterOfGravityMulti[PeakNumber - 1][i,j]
     InnerCrystalAverage = InnerCrystalAverage / InnerCrystalCount
     EdgeCrystalAverage = EdgeCrystalAverage / EdgeCrystalCount
-    DataFile.write('Inner Average ' + str(InnerCrystalAverage))
-    DataFile.write('Edge Average ' + str(EdgeCrystalAverage))
+    DataFile.write('Inner Average ' + str(InnerCrystalAverage) + '\n')
+    DataFile.write('Edge Average ' + str(EdgeCrystalAverage) + '\n')
 
     print('X Max:', XMax, 'X Min:', XMin, 'Y Max:', YMax, 'Y Min:', YMin)
 
@@ -278,7 +279,7 @@ for Folder in os.listdir(Parent):
             if(CrystalDetection[i][j] == 1):
                 CrystalArea = CrystalArea + 1
     CrystalArea = CrystalArea * 0.25
-    DataFile.write('Crystal Area (µm²): ' + str(CrystalArea))
+    DataFile.write('Crystal Area (µm²): ' + str(CrystalArea) + '\n')
 
     # Crystal Edge Detection Colormap
     XAxis,YAxis = np.meshgrid(np.linspace(0, ScanWidth, StepsX), np.linspace(0, ScanHeight, StepsY))
