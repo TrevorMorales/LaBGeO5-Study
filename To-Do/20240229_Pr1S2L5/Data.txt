@@ -1,1 +1,0 @@
-Crystal Average: 581.4725350926213Glass Average: 581.5551079369251Inner Average 581.4681161990578Edge Average 581.491085239562Crystal Area (µm²): 124.75

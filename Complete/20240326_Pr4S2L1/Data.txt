@@ -1,0 +1,8 @@
+Looking at peak 9
+Crystal Average: 607.2086102002286
+Glass Average: 607.1310813270277
+Inner Average 607.2079514548614
+Edge Average 607.195225392153
+Center to Edge Distance (X): 6.0
+Center to Edge Distance (Y): 10.75
+Crystal Area (µm²): 201.5
