@@ -122,8 +122,9 @@ for Folder in os.listdir(Parent):
     # Determine which peak to look at
     FluorescenceIndex = 0
     for i in range(SpectrumWidth):
-        if(int(Wavelengths[i] * 10) == 5395 and FluorescenceIndex == 0):
+        if(int(Wavelengths[i] * 10) == 5394 and FluorescenceIndex == 0):
             FluorescenceIndex = i
+    print("Index", FluorescenceIndex)
     CenterOfGravityEr = sb.CenterOfGravity(ScanData, FluorescenceIndex, 20, Wavelengths, StepsY, StepsX, SpectrumWidth)
 
     # Intensity Colormap
